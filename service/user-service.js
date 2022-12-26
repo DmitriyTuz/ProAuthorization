@@ -13,6 +13,13 @@ class UserService {
         if (candidate) {
             throw ApiError.BadRequest(`Пользователь с почтовым адресом ${email} уже существует`)
         }
+
+        const regexp = /^(?=.*?\p{Ll})(?=S*?.*?\p{Lu})(?=.*?\d)./u
+        const result = regexp.test(password)
+        if (!result) {
+            throw ApiError.BadRequest(`Пароль должен содержать минимум одну букву в нижнем регистре одну в верхнем включая разные языки и одну цифру`)
+        }
+
         const hashPassword = await bcrypt.hash(password, 3)
         const activationLink = uuid.v4()
 
